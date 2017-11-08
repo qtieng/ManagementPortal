@@ -40,7 +40,6 @@ export class AuthServerProvider {
             response.expires_at = expiredAt.getTime();
             this.cookieService.putObject('authenticationToken', response);
 
-            // this.$localStorage.store('authenticationToken', response);
             return response;
         }
     }
@@ -65,7 +64,6 @@ export class AuthServerProvider {
         const headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json'
-            // 'Authorization': 'Basic ' + this.base64.encode('ManagementPortalapp' + ':' + 'my-secret-token-to-change-in-production')
         });
         const refreshData = 'grant_type=refresh_token';
         return this.http.post('oauthserver/oauth/token', refreshData, {

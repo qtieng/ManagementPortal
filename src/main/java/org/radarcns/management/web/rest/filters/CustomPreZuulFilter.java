@@ -7,13 +7,18 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import org.radarcns.management.config.ManagementPortalProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomPreZuulFilter extends ZuulFilter {
+
+    @Autowired
+    private  ManagementPortalProperties managementPortalProperties;
 
     Logger logger = LoggerFactory.getLogger(CustomPreZuulFilter.class);
     @Override
@@ -23,7 +28,7 @@ public class CustomPreZuulFilter extends ZuulFilter {
             byte[] encoded;
             try {
                 // get this from properties, this will allow us to use ENV variables for docker
-                encoded = Base64.encode("ManagementPortalapp:my-secret-token-to-change-in-production".getBytes("UTF-8"));
+                encoded = Base64.encode((managementPortalProperties.getFrontend().getClientId()+":"+managementPortalProperties.getFrontend().getClientSecret()).getBytes("UTF-8"));
                 ctx.addZuulRequestHeader("Authorization", "Basic " + new String(encoded));
                 final HttpServletRequest req = ctx.getRequest();
 
