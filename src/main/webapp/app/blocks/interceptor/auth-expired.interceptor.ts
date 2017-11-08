@@ -5,6 +5,7 @@ import { AuthService } from '../../shared/auth/auth.service';
 import { Principal } from '../../shared/auth/principal.service';
 import { AuthServerProvider } from '../../shared/auth/auth-oauth2.service';
 import {HttpInterceptor} from "ng-jhipster";
+import {Router} from "@angular/router";
 
 export class AuthExpiredInterceptor extends HttpInterceptor {
 
@@ -21,15 +22,23 @@ export class AuthExpiredInterceptor extends HttpInterceptor {
             if (error.status === 401) {
                 const principal: Principal = this.injector.get(Principal);
                 const authServerProvider: AuthServerProvider = this.injector.get(AuthServerProvider);
-                authServerProvider.refreshToken();// refreshes, but cannot try the request again, since we are already at response.
+                authServerProvider.refreshToken();
 
-                if (principal.isAuthenticated()) {
-                    const auth: AuthService = this.injector.get(AuthService);
-                    auth.authorize(true);
-                } else {
-
-                    authServerProvider.logout();
-                }
+                // {
+                    const router = this.injector.get(Router);
+                    let url = error.body;
+                    observable.subscribe(res => {console.log("res ", res.json())});
+                    router.navigate([url]);
+                // }// refreshes, but cannot try the request again, since we are already at response.
+                // else {
+                // if (principal.isAuthenticated()) {
+                //     const auth: AuthService = this.injector.get(AuthService);
+                //     auth.authorize(true);
+                // } else {
+                //
+                //     authServerProvider.logout();
+                // }
+                // }
             }
             return Observable.throw(error);
         });

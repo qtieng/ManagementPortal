@@ -16,16 +16,8 @@ export class AuthInterceptor extends HttpInterceptor {
     requestIntercept(options?: RequestOptionsArgs): RequestOptionsArgs {
         const cookieService = this.injector.get(CookieService);
         const token : any = cookieService.getObject('authenticationToken');
-        if ( token && token.expires_at ) {
-            if( token.expires_at -10000 > new Date().getTime()) {
-                options.headers.append('Authorization', 'Bearer ' + token.access_token);
-            }
-            else {
-                // can try to pre-refresh the token 10 sec before it expires. this results in recurisive calls. Not working
-                console.log("going to expire");
-                const authService = this.injector.get(AuthServerProvider);
-                authService.refreshToken();
-            }
+        if (token && token.expires_at && token.expires_at > new Date().getTime()) {
+            options.headers.append('Authorization', 'Bearer ' + token.access_token);
         }
         return options;
     }
