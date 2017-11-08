@@ -53,6 +53,7 @@ export class AuthServerProvider {
                 const expiredAt = new Date();
                 expiredAt.setSeconds(expiredAt.getSeconds() + response.expires_in);
                 response.expires_at = expiredAt.getTime();
+                this.cookieService.remove('authenticationToken');
                 this.cookieService.putObject('authenticationToken', response);
                 return true;
             });
