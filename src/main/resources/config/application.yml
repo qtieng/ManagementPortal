@@ -14,6 +14,29 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+zuul:
+    host:
+        max-total-connections: 1000
+        max-per-route-connections: 100
+    semaphore:
+        max-semaphores: 500
+    retryable: true
+    routes:
+        ManagementPortal:
+            path: /oauthserver/oauth/**
+            url: http://localhost:8080/oauth
+ribbon:
+    eureka:
+        enabled: false
+
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 10000
+
 management:
     security:
         roles: ROLE_SYS_ADMIN
