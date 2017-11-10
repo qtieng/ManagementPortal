@@ -1,11 +1,12 @@
 import { Observable } from 'rxjs/Observable';
-import { RequestOptionsArgs, Response } from '@angular/http';
+import { RequestOptionsArgs, Response , Request} from '@angular/http';
 import { HttpInterceptor } from 'ng-jhipster';
 import {CookieService} from "angular2-cookie/core";
 import {Injector} from "@angular/core";
 import {AuthServerProvider} from "../../shared/auth/auth-oauth2.service";
+import {JhiHttpInterceptor} from "./http.interceptor";
 
-export class AuthInterceptor extends HttpInterceptor {
+export class AuthInterceptor extends JhiHttpInterceptor {
 
     constructor(
         private injector: Injector,
@@ -22,7 +23,7 @@ export class AuthInterceptor extends HttpInterceptor {
         return options;
     }
 
-    responseIntercept(observable: Observable<Response>): Observable<Response> {
+    responseIntercept( url : string | Request, observable: Observable<Response>): Observable<Response>{
         return observable; // by pass
     }
 

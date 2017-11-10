@@ -44,21 +44,24 @@ export class AuthServerProvider {
         }
     }
 
-    refreshToken() : boolean {
-        const rememberMe: any = this.cookieService.getObject('rememberMe');
-        if (rememberMe && rememberMe === true) {
-            this.sendRefreshTokenRequest().subscribe((resp) => {
-                const response = resp.json();
-                const expiredAt = new Date();
-                expiredAt.setSeconds(expiredAt.getSeconds() + response.expires_in);
-                response.expires_at = expiredAt.getTime();
-                this.cookieService.remove('authenticationToken');
-                this.cookieService.putObject('authenticationToken', response);
-                return true;
-            });
-            return false;
-        }
-    }
+    // refreshToken(): Observable<Response> {
+    //
+    //     this.sendRefreshTokenRequest().subscribe((resp) => {
+    //         const response = resp.json();
+    //         if (typeof response.access_token !== 'undefined') {
+    //             const expiredAt = new Date();
+    //             expiredAt.setSeconds(expiredAt.getSeconds() + response.expires_in);
+    //             response.expires_at = expiredAt.getTime();
+    //             this.cookieService.remove('authenticationToken');
+    //             this.cookieService.putObject('authenticationToken', response);
+    //             console.log("refreshed");
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     });
+    //
+    // }
 
     sendRefreshTokenRequest(): Observable<Response> {
         const headers = new Headers({
@@ -72,8 +75,15 @@ export class AuthServerProvider {
     }
 
     logout(): Observable<any> {
+        console.log("called");
         return new Observable(observer => {
             this.http.post('api/logout', {});
+            const headers = new Headers({
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            });
+            const refreshData = 'grant_type=refresh_token';
+            this.http.delete('oauthserver/oauth/token', { headers: headers} );
             this.cookieService.removeAll();
             // this.$localStorage.clear('authenticationToken');
             observer.complete();
