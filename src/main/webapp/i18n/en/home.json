@@ -1,6 +1,6 @@
 {
     "home": {
-        "title": "Welcome to RADAR Management Portal",
+        "title": "Welcome to QUEENSLAND SEIZURE GAUGE Management Portal",
         "subtitle": "Manage your patient monitoring studies here!",
         "logged": {
             "message": "You are logged in as user \"{{username}}\"."
